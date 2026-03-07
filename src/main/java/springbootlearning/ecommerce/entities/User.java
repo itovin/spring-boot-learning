@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -14,7 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,6 +33,9 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Address> addressSet = new HashSet<>();
 
     public User(String firstName, String lastName, String email, String username, String password){
         this.firstName = firstName;

@@ -1,5 +1,3 @@
-USE practiceecom;
-
 CREATE TABLE users(
     id BIGINT AUTO_INCREMENT,
     first_name VARCHAR(255) NOT NULL,
