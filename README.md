@@ -4,3 +4,5 @@
 ##Feature
 -Register user
 -Add address: available on both new user and existing user
+-Add Products and category
+-View All products and view all by category
