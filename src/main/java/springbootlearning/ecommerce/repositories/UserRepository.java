@@ -1,4 +1,4 @@
-package springbootlearning.ecommerce.entities.repositories;
+package springbootlearning.ecommerce.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

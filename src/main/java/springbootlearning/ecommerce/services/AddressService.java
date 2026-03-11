@@ -1,9 +1,9 @@
-package springbootlearning.ecommerce.entities.services;
+package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import springbootlearning.ecommerce.entities.Address;
-import springbootlearning.ecommerce.entities.repositories.AddressRepository;
+import springbootlearning.ecommerce.repositories.AddressRepository;
 
 @AllArgsConstructor
 @Service

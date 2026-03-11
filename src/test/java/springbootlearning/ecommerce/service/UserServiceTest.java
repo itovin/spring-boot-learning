@@ -2,8 +2,8 @@ package springbootlearning.ecommerce.service;
 
 import org.junit.jupiter.api.Test;
 import springbootlearning.ecommerce.entities.User;
-import springbootlearning.ecommerce.entities.repositories.UserRepository;
-import springbootlearning.ecommerce.entities.services.UserService;
+import springbootlearning.ecommerce.repositories.UserRepository;
+import springbootlearning.ecommerce.services.UserService;
 
 import java.util.Optional;
 

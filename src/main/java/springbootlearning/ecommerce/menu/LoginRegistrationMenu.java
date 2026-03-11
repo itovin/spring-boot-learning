@@ -1,12 +1,11 @@
 package springbootlearning.ecommerce.menu;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import springbootlearning.ecommerce.entities.Address;
 import springbootlearning.ecommerce.entities.User;
-import springbootlearning.ecommerce.entities.services.AddressService;
-import springbootlearning.ecommerce.entities.services.UserService;
+import springbootlearning.ecommerce.services.AddressService;
+import springbootlearning.ecommerce.services.UserService;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
 import springbootlearning.ecommerce.exceptions.UserDoesNotExistException;
 import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
@@ -15,24 +14,12 @@ import java.util.Scanner;
 
 @AllArgsConstructor
 @Component
-public class Menu {
+public class LoginRegistrationMenu {
     private final Scanner scanner = new Scanner(System.in);
     private final UserService userService;
     private final AddressService addressService;
 
-    public void mainMenu(){
-
-        while(true) {
-            System.out.println("1. Register user\n2. Add address");
-            String choice = scanner.nextLine();
-            switch(choice){
-                case "1" -> registerUser();
-                case "2" -> addAddressToExistingUser();
-            }
-        }
-    }
-
-    public User createUser() throws UsernameAlreadyRegisteredException, EmailAddressAlreadyRegisteredException {
+        public User createUser() throws UsernameAlreadyRegisteredException, EmailAddressAlreadyRegisteredException {
         System.out.print("Enter your first name: ");
         String firstName = scanner.nextLine();
         System.out.print("Enter your last name: ");
@@ -66,7 +53,6 @@ public class Menu {
         return userService.getUser(usernameOrEmail);
     }
 
-    @Transactional
     public void addAddressToExistingUser(){
 
         String choice;

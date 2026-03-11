@@ -1,10 +1,10 @@
-package springbootlearning.ecommerce.entities.services;
+package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import springbootlearning.ecommerce.entities.Address;
 import springbootlearning.ecommerce.entities.User;
-import springbootlearning.ecommerce.entities.repositories.UserRepository;
+import springbootlearning.ecommerce.repositories.UserRepository;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
 import springbootlearning.ecommerce.exceptions.UserDoesNotExistException;
 import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
