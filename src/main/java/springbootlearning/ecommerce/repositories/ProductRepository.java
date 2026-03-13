@@ -7,10 +7,14 @@ import org.springframework.stereotype.Repository;
 import springbootlearning.ecommerce.entities.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAll();
     @Query("select p from Product p where category.id = :id order by price")
     List<Product> findAllByCategoryId(@Param("id") Long id);
+
+    Optional<Product> findById(Long id);
+    Optional<Product> findByName(String name);
 }
