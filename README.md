@@ -6,3 +6,5 @@
 -Add address: available on both new user and existing user
 -Add Products and category
 -View All products and view all by category
+-Add To Cart feature
+-View Cart Feature
