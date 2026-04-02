@@ -6,8 +6,5 @@ spring:
     username: root
     password: MyPassword!
     driver-class-name: com.mysql.cj.jdbc.Driver
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    jpa:
-      show-sql: true
+  jpa:
+    show-sql: true

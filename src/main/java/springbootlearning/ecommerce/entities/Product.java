@@ -21,11 +21,11 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "price")
-    private BigDecimal price;
-
     @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
+    private BigDecimal price;
 
     @Column(name = "status")
     private String status;

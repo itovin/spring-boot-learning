@@ -17,8 +17,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> getAllByCategoryId(Long id){
-        return productRepository.findAllByCategoryId(id);
+    public List<Product> getAllByCategoryId(Byte id){
+        return productRepository.findAllWithCategoryId(Integer.valueOf(id));
     }
     public void save(Product product){
         productRepository.save(product);

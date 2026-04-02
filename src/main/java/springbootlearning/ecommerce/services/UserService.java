@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import springbootlearning.ecommerce.entities.Address;
 import springbootlearning.ecommerce.entities.User;
+import springbootlearning.ecommerce.exceptions.LoginFailedException;
 import springbootlearning.ecommerce.repositories.UserRepository;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
-import springbootlearning.ecommerce.exceptions.UserDoesNotExistException;
 import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
 
 @AllArgsConstructor
@@ -15,14 +15,17 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    public User getUser(String usernameOrEmail) throws UserDoesNotExistException {
+    public User getUser(String usernameOrEmail) throws LoginFailedException {
         if(isEmailRegistered(usernameOrEmail))
             return userRepository.findByEmail(usernameOrEmail).get();
         if(isUsernameRegistered(usernameOrEmail))
             return userRepository.findByUsername(usernameOrEmail).get();
-        throw new UserDoesNotExistException("User does not exist");
+        throw new LoginFailedException("Login failed. Invalid username or password.");
     }
 
+    public User getUserById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
     public User createUser(String firstName, String lastName, String email, String username, String password) throws EmailAddressAlreadyRegisteredException, UsernameAlreadyRegisteredException {
         if(isEmailRegistered(email))
             throw new EmailAddressAlreadyRegisteredException("Email address is already registered");
@@ -48,10 +51,10 @@ public class UserService {
         System.out.println("Save successful!");
     }
     public boolean isEmailRegistered(String email){
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.existsByEmail(email);
     }
 
     public boolean isUsernameRegistered(String username){
-        return userRepository.findByUsername(username).isPresent();
+        return userRepository.existsByUsername(username);
     }
 }

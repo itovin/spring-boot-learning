@@ -34,7 +34,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Set<Address> addressSet = new HashSet<>();
 
     public User(String firstName, String lastName, String email, String username, String password){
@@ -43,6 +43,11 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+
+    public void addAddress(Address address){
+        addressSet.add(address);
+        address.setUser(this);
     }
 
 }
