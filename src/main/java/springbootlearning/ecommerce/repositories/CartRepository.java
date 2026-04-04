@@ -3,6 +3,7 @@ package springbootlearning.ecommerce.repositories;
 import jakarta.persistence.Entity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,9 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Query("select c from Cart c where user = :user and product = :product ")
     Optional<Cart> findCartItemOfUser(@Param("user")User user, @Param("product")Product product);
+
+    @Modifying
+    @Query("delete from Cart c where c.user.id = :userId and c.product.id = :productId")
+    int deleteItemFromCart(@Param("userId") Long userId, @Param("productId")Long productId);
+
 }

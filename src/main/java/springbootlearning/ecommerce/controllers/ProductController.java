@@ -19,24 +19,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private final ProductMapper productMapper;
     private final ProductService productService;
-    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> showAllProducts(@RequestParam(required = false, name = "categoryId") Byte categoryId){
-        List<ProductDto> productDtoList = null;
-        List<Product> productList = null;
-        if(categoryId == null)
-            productList = productService.getAll();
-        else if(!categoryService.isCategoryExists(categoryId))
-            throw new CategoryNotFoundException("No such category");
-        else{
-            productList = productService.getAllByCategoryId(categoryId);
-        }
-       productDtoList = productList.stream()
-                .map(productMapper::productToProductDto)
-                .toList();
-        return ResponseEntity.ok(productDtoList);
+        return ResponseEntity.ok(productService.getProductDtoList(categoryId));
     }
 }

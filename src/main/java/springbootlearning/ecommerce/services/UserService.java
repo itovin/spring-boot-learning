@@ -2,9 +2,12 @@ package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import springbootlearning.ecommerce.dtos.RegisterUserDto;
+import springbootlearning.ecommerce.dtos.UserDto;
 import springbootlearning.ecommerce.entities.Address;
 import springbootlearning.ecommerce.entities.User;
 import springbootlearning.ecommerce.exceptions.LoginFailedException;
+import springbootlearning.ecommerce.mappers.UserMapper;
 import springbootlearning.ecommerce.repositories.UserRepository;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
 import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
@@ -13,6 +16,7 @@ import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredExceptio
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
 
     public User getUser(String usernameOrEmail) throws LoginFailedException {
@@ -56,5 +60,18 @@ public class UserService {
 
     public boolean isUsernameRegistered(String username){
         return userRepository.existsByUsername(username);
+    }
+
+    public UserDto registerUser(RegisterUserDto newUserDto){
+
+        String newUserEmail = newUserDto.getEmail();
+        String newUserUsername = newUserDto.getUsername();
+        if(isEmailRegistered(newUserEmail))
+            throw new EmailAddressAlreadyRegisteredException("Email already registered");
+        if(isUsernameRegistered(newUserUsername))
+            throw new UsernameAlreadyRegisteredException("Username already registered");
+        User user = userMapper.newUserDtoToUser(newUserDto);
+        save(user);
+        return userMapper.userToUserDto(user);
     }
 }

@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UsernameAlreadyRegisteredException.class, EmailAddressAlreadyRegisteredException.class,
-            SQLIntegrityConstraintViolationException.class, LoginFailedException.class, CategoryNotFoundException.class})
-    public ResponseEntity<?> handleUsernameOrEmailAlreadyRegisteredException(Exception exception){
+            SQLIntegrityConstraintViolationException.class, LoginFailedException.class, CategoryNotFoundException.class, ItemDoesNotExistInCart.class})
+    public ResponseEntity<?> handleException(Exception exception){
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }

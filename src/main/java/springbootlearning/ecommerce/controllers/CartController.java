@@ -3,50 +3,37 @@ package springbootlearning.ecommerce.controllers;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springbootlearning.ecommerce.dtos.AddCartItemDto;
-import springbootlearning.ecommerce.dtos.CartDto;
-import springbootlearning.ecommerce.dtos.CartItemDto;
-import springbootlearning.ecommerce.dtos.ProductDto;
+import springbootlearning.ecommerce.dtos.*;
 import springbootlearning.ecommerce.entities.Cart;
+import springbootlearning.ecommerce.exceptions.ItemDoesNotExistInCart;
 import springbootlearning.ecommerce.mappers.CartMapper;
-import springbootlearning.ecommerce.mappers.ProductMapper;
 import springbootlearning.ecommerce.services.CartService;
 import springbootlearning.ecommerce.services.ProductService;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/cart")
 public class CartController {
-    private final CartMapper cartMapper;
     private final CartService cartService;
 
 
     @PostMapping
     public ResponseEntity<CartItemDto> addToCart(@RequestBody AddCartItemDto addCartItemDto){
-
-        Cart cartItem = cartMapper.cartItemDtoToCart(addCartItemDto);
-        cartService.save(cartItem);
-        CartItemDto cartItemDto = cartMapper.cartItemToCartItemDto(cartItem);
-        return ResponseEntity.ok(cartItemDto);
+        return ResponseEntity.ok(cartService.saveCartItem(addCartItemDto));
     }
 
     @GetMapping
     public ResponseEntity<CartDto> showCart(@RequestParam(name = "userId") Long id){
-        CartDto cartDto = new CartDto();
+        return ResponseEntity.ok(cartService.getCartDto(id));
+    }
 
-        List<CartItemDto> cartItemDtoList = cartService.getAllItems(id).stream()
-                .map(cartMapper::cartItemToCartItemDto)
-                .toList();
-        BigDecimal totalGrandPrice = cartItemDtoList.stream()
-                .map(cartItemDto -> cartItemDto.getTotalPrice())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        cartDto.setCartItemDtoList(cartItemDtoList);
-        cartDto.setTotalGrandPrice(totalGrandPrice);
-
-        return ResponseEntity.ok(cartDto);
+    @DeleteMapping
+    public ResponseEntity<Map<String, String>> deleteFromCart(@RequestBody DeleteCartItemDto deleteCartItemDto){
+        String name = cartService.deleteCartItem(deleteCartItemDto);
+        return ResponseEntity.ok(
+                Map.of("Deleted", name)
+        );
     }
 }
