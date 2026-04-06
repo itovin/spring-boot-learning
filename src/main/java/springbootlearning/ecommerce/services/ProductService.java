@@ -2,7 +2,9 @@ package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import springbootlearning.ecommerce.dtos.AddProductDto;
 import springbootlearning.ecommerce.dtos.ProductDto;
+import springbootlearning.ecommerce.entities.Category;
 import springbootlearning.ecommerce.entities.Product;
 import springbootlearning.ecommerce.exceptions.CategoryNotFoundException;
 import springbootlearning.ecommerce.exceptions.ProductNotFoundException;
@@ -54,5 +56,30 @@ public class ProductService {
                 .map(productMapper::productToProductDto)
                 .toList();
         return productDtoList;
+    }
+
+    public ProductDto addProduct(AddProductDto addProductDto){
+        if(addProductDto == null)
+            return null;
+        Product product = productMapper.addProductDtoToProduct(addProductDto);
+        Category category = null;
+        if(addProductDto.getCategoryId() != null)
+            category = categoryService.getCategoryById(addProductDto.getCategoryId());
+        product.setCategory(category);
+        save(product);
+        return productMapper.productToProductDto(product);
+    }
+
+    public ProductDto getProductDto(Long productId){
+        Product product = getProduct(productId);
+        return productMapper.productToProductDto(product);
+    }
+
+    public String deleteProduct(Long id){
+        Product product = getProduct(id);
+        productRepository.deleteById(id);
+        return product.getName();
+
+
     }
 }

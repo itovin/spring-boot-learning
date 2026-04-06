@@ -13,6 +13,7 @@ import springbootlearning.ecommerce.entities.User;
 import springbootlearning.ecommerce.exceptions.ItemDoesNotExistInCart;
 import springbootlearning.ecommerce.mappers.CartMapper;
 import springbootlearning.ecommerce.repositories.CartRepository;
+import springbootlearning.ecommerce.results.AddToCartResult;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,7 +38,7 @@ public class CartService {
         return cartRepository.findCartItemOfUser(user, product).orElse(null);
     }
 
-    @Transactional
+
     public int deleteCartItemFromCart(Long userId, Long productId){
         return cartRepository.deleteItemFromCart(userId, productId);
     }
@@ -59,27 +60,30 @@ public class CartService {
         return cartDto;
     }
 
-    public Cart addCartItemDtoToCart(AddCartItemDto addCartItemDto){
+    public AddToCartResult addToCart(AddCartItemDto addCartItemDto){
         User user = userService.getUserById(addCartItemDto.getUserId());
         Product product = productService.getProduct(addCartItemDto.getProductId());
         Cart cart = getCartItemOfUser(user, product);
+        AddToCartResult result = new AddToCartResult();
         if(cart == null)
-            return new Cart(user, product, addCartItemDto.getQuantity());
-        cart.setQuantity(cart.getQuantity() + addCartItemDto.getQuantity());
-        return cart;
+            cart = new Cart(user, product, addCartItemDto.getQuantity());
+        else {
+            cart.setQuantity(cart.getQuantity() + addCartItemDto.getQuantity());
+            result.setStatus(AddToCartResult.AddToCartStatus.UPDATED);
+        }
+        save(cart);
+        CartItemDto cartItemDto = cartMapper.cartItemToCartItemDto(cart);
+        result.setCartItemDto(cartItemDto);
+        return result;
     }
 
-    public CartItemDto saveCartItem(AddCartItemDto addCartItemDto){
-        Cart cart = addCartItemDtoToCart(addCartItemDto);
-        save(cart);
-        return cartMapper.cartItemToCartItemDto(cart);
-    }
 
 
     public CartItemDto cartItemToCartItemDto(Cart cartItem){
         return cartMapper.cartItemToCartItemDto(cartItem);
     }
 
+    @Transactional
     public String deleteCartItem(DeleteCartItemDto deleteCartItemDto){
         int rowDeleted = deleteCartItemFromCart(deleteCartItemDto.getUserId(), deleteCartItemDto.getProductId());
         if(rowDeleted == 0)

@@ -34,9 +34,9 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Product(String name, Double price, String description, String status){
+    public Product(String name, BigDecimal price, String description, String status){
         this.name = name;
-        this.price = BigDecimal.valueOf(price);
+        this.price = price;
         this.description = description;
         this.status = status;
     }

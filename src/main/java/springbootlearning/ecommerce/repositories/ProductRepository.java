@@ -2,6 +2,7 @@ package springbootlearning.ecommerce.repositories;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findById(Long id);
     Optional<Product> findByName(String name);
+
+    @Modifying
+    @Query("delete from Product where id = :productId")
+    int deleteProduct(@Param("productId") Long productId);
 }

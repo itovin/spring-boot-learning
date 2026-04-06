@@ -2,6 +2,7 @@ package springbootlearning.ecommerce.controllers;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springbootlearning.ecommerce.dtos.LoginDto;
@@ -21,7 +22,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserDto newUserDto){
-        return ResponseEntity.ok(userService.registerUser(newUserDto));
+        return new ResponseEntity<>(userService.registerUser(newUserDto), HttpStatus.CREATED);
     }
 
 //    @GetMapping("/login")
