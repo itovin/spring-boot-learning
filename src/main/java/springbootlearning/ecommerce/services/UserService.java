@@ -1,7 +1,12 @@
 package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import springbootlearning.ecommerce.config.SecurityConfig;
+import springbootlearning.ecommerce.dtos.LoginDto;
 import springbootlearning.ecommerce.dtos.RegisterUserDto;
 import springbootlearning.ecommerce.dtos.UserDto;
 import springbootlearning.ecommerce.entities.Address;
@@ -12,23 +17,22 @@ import springbootlearning.ecommerce.repositories.UserRepository;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
 import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder  passwordEncoder;
 
 
-    public User getUser(String usernameOrEmail) throws LoginFailedException {
-        if(isEmailRegistered(usernameOrEmail))
-            return userRepository.findByEmail(usernameOrEmail).get();
-        if(isUsernameRegistered(usernameOrEmail))
-            return userRepository.findByUsername(usernameOrEmail).get();
-        throw new LoginFailedException("Login failed. Invalid username or password.");
+    public Optional<User> getUser(String usernameOrEmail) throws LoginFailedException {
+        return userRepository.findByUserNameOrEmail(usernameOrEmail);
     }
 
     public User getUserById(Long id){
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
     public User createUser(String firstName, String lastName, String email, String username, String password) throws EmailAddressAlreadyRegisteredException, UsernameAlreadyRegisteredException {
         if(isEmailRegistered(email))
@@ -71,7 +75,17 @@ public class UserService {
         if(isUsernameRegistered(newUserUsername))
             throw new UsernameAlreadyRegisteredException("Username already registered");
         User user = userMapper.newUserDtoToUser(newUserDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         save(user);
         return userMapper.userToUserDto(user);
     }
+
+//    public String login(LoginDto loginDto){
+//        User user = getUser(loginDto.getUsernameOrEmail());
+//        String rawPassword = loginDto.getPassword();
+//        String encodedPassword = user.getPassword();
+//        if(!passwordEncoder.matches(rawPassword, encodedPassword))
+//            throw new LoginFailedException("Login failed. Invalid username or password");
+//        return "Login Successful!";
+//    }
 }

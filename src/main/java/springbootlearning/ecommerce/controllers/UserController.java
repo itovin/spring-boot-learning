@@ -22,15 +22,12 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserDto newUserDto){
-        return new ResponseEntity<>(userService.registerUser(newUserDto), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(newUserDto));
     }
 
 //    @GetMapping("/login")
 //    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto){
-//        User user = userService.getUser(loginDto.getUsernameOrEmail());
-//        if(!loginDto.getPassword().equals(user.getPassword()))
-//            throw new LoginFailedException("Login failed. Invalid username or password");
-//        return ResponseEntity.ok("Login successful");
+//        return ResponseEntity.ok(userService.login(loginDto));
 //    }
 
 //    @GetMapping("/{userId}")

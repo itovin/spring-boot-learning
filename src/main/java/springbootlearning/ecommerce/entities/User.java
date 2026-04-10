@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
