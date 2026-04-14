@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import springbootlearning.ecommerce.entities.Address;
+import springbootlearning.ecommerce.entities.Role;
 
 @Getter
 public class RegisterUserDto {
@@ -25,5 +26,8 @@ public class RegisterUserDto {
     @NotBlank(message = "Password must not be blanked")
     @Size(min = 8, max = 25, message = "Password must be 8 to 25 characters long")
     private String password;
+
+    private Role role = Role.USER;
+
     private Address address = null;
 }

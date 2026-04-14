@@ -4,14 +4,12 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import springbootlearning.ecommerce.dtos.LoginDto;
 import springbootlearning.ecommerce.dtos.RegisterUserDto;
 import springbootlearning.ecommerce.dtos.UserDto;
 import springbootlearning.ecommerce.entities.User;
-import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
-import springbootlearning.ecommerce.exceptions.LoginFailedException;
-import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
+import springbootlearning.ecommerce.exceptions.UserNotFoundException;
 import springbootlearning.ecommerce.mappers.UserMapper;
 import springbootlearning.ecommerce.services.UserService;
 
@@ -19,10 +17,18 @@ import springbootlearning.ecommerce.services.UserService;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserDto newUserDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(newUserDto));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> me(){
+        String usernameOrEmail = String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        User user = userService.getUser(usernameOrEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return ResponseEntity.ok(userMapper.userToUserDto(user));
     }
 
 //    @GetMapping("/login")

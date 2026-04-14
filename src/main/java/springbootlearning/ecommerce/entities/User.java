@@ -35,15 +35,20 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Set<Address> addressSet = new HashSet<>();
 
-    public User(String firstName, String lastName, String email, String username, String password){
+    public User(String firstName, String lastName, String email, String username, String password, Role role){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public void addAddress(Address address){

@@ -20,9 +20,10 @@ public class UserMapper {
     public User newUserDtoToUser(RegisterUserDto newUser){
         if(newUser == null)
             return null;
-        User user =  new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getUsername(), newUser.getPassword());
+        User user =  new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getUsername(), newUser.getPassword(), newUser.getRole());
         if(newUser.getAddress() != null)
             user.addAddress(newUser.getAddress());
         return user;
     }
+
 }

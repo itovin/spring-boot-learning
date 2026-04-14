@@ -14,7 +14,7 @@ public class AddProductDto {
     private String description;
     @PositiveOrZero
     private BigDecimal price;
-    private String status = "Inactive";
+    private String status = "Active";
     private Byte categoryId;
 
 }

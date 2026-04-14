@@ -1,12 +1,9 @@
 package springbootlearning.ecommerce.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import springbootlearning.ecommerce.config.SecurityConfig;
-import springbootlearning.ecommerce.dtos.LoginDto;
 import springbootlearning.ecommerce.dtos.RegisterUserDto;
 import springbootlearning.ecommerce.dtos.UserDto;
 import springbootlearning.ecommerce.entities.Address;
@@ -15,7 +12,7 @@ import springbootlearning.ecommerce.exceptions.LoginFailedException;
 import springbootlearning.ecommerce.mappers.UserMapper;
 import springbootlearning.ecommerce.repositories.UserRepository;
 import springbootlearning.ecommerce.exceptions.EmailAddressAlreadyRegisteredException;
-import springbootlearning.ecommerce.exceptions.UsernameAlreadyRegisteredException;
+import springbootlearning.ecommerce.exceptions.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -33,13 +30,6 @@ public class UserService {
 
     public User getUserById(Long id){
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-    }
-    public User createUser(String firstName, String lastName, String email, String username, String password) throws EmailAddressAlreadyRegisteredException, UsernameAlreadyRegisteredException {
-        if(isEmailRegistered(email))
-            throw new EmailAddressAlreadyRegisteredException("Email address is already registered");
-        if(isUsernameRegistered(username))
-            throw new UsernameAlreadyRegisteredException("Username is already registered");
-        return new User(firstName, lastName, email, username, password);
     }
 
     public Address createAddress(String address1, String address2, String city, String province, String zipCode){
@@ -73,7 +63,7 @@ public class UserService {
         if(isEmailRegistered(newUserEmail))
             throw new EmailAddressAlreadyRegisteredException("Email already registered");
         if(isUsernameRegistered(newUserUsername))
-            throw new UsernameAlreadyRegisteredException("Username already registered");
+            throw new UserNotFoundException("Username already registered");
         User user = userMapper.newUserDtoToUser(newUserDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         save(user);

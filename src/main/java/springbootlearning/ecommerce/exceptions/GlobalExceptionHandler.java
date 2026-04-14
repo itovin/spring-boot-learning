@@ -24,19 +24,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorMap);
     }
 
-    @ExceptionHandler({UsernameAlreadyRegisteredException.class, EmailAddressAlreadyRegisteredException.class,
-            SQLIntegrityConstraintViolationException.class, CategoryNotFoundException.class,
-            ItemDoesNotExistInCart.class, ProductNotFoundException.class, UsernameNotFoundException.class})
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            EmailAddressAlreadyRegisteredException.class,
+            SQLIntegrityConstraintViolationException.class,
+            CategoryNotFoundException.class,
+            ItemDoesNotExistInCart.class,
+            ProductNotFoundException.class,
+            UsernameNotFoundException.class
+    })
     public ResponseEntity<?> handleBadRequestException(Exception exception){
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
-    @ExceptionHandler(LoginFailedException.class)
+
+    @ExceptionHandler({
+            LoginFailedException.class,
+            BadCredentialsException.class,
+            InvalidTokenException.class
+    })
     public ResponseEntity<?> handleUnauthorizedException(Exception exception){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Void> handleBadCredentialsException(){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 }
