@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 import springbootlearning.ecommerce.config.JwtConfig;
 import springbootlearning.ecommerce.entities.Role;
-import springbootlearning.ecommerce.entities.User;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -22,14 +21,15 @@ public class JwtService {
     private final JwtConfig jwtConfig;
 
     public String generateAccessToken(String usernameOrEmail, UserDetails userDetails){
-        return generateToken(usernameOrEmail, userDetails, jwtConfig.getAccessTokenExpiration());
+        return generateToken(usernameOrEmail, userDetails, jwtConfig.getAccessTokenExpiration(), jwtConfig.getAccessTokenSecretKey());
     }
 
     public String generateRefreshToken(String usernameOrEmail, UserDetails userDetails){
-        return generateToken(usernameOrEmail, userDetails, jwtConfig.getRefreshTokenExpiration());
+        return generateToken(usernameOrEmail, userDetails, jwtConfig.getRefreshTokenExpiration(), jwtConfig.getRefreshTokenSecretKey());
     }
 
-    private String generateToken(String usernameOrEmail, UserDetails userDetails, int tokenExpiration) {
+    private String generateToken(String usernameOrEmail, UserDetails userDetails, int tokenExpiration, SecretKey secretKey) {
+
         String roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
@@ -39,34 +39,33 @@ public class JwtService {
                 .claim("role", roles)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(jwtConfig.getSecretKey())
+                .signWith(secretKey)
                 .compact();
     }
 
-    public boolean validateToken(@RequestHeader("Authorization") String token){
-
+    public boolean validateToken(String token, SecretKey secretKey){
         try {
-            return getPayload(token).getExpiration().after(new Date());
+            return getPayload(token, secretKey).getExpiration().after(new Date());
         }catch(JwtException e){
             return false;
         }
 
     }
 
-    public Claims getPayload(String token){
+    public Claims getPayload(String token, SecretKey secretKey){
 
         return Jwts.parser()
-                .verifyWith(jwtConfig.getSecretKey())
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    public String getUsernameOrEmailFromToken(String token){
-        return getPayload(token).getSubject();
+    public String getUsernameOrEmailFromToken(String token, SecretKey secretKey){
+        return getPayload(token, secretKey).getSubject();
     }
 
-    public Role getRoleFromToken(String token){
-        return Role.valueOf(getPayload(token).get("role", String.class));
+    public Role getRoleFromToken(String token, SecretKey secretKey){
+        return Role.valueOf(getPayload(token, secretKey).get("role", String.class));
     }
 }

@@ -53,10 +53,11 @@ public class AuthController {
 
     @PostMapping("/auth/refresh")
     public ResponseEntity<JwtResponse> refresh(@CookieValue("refreshToken") String refreshToken){
-        if(!jwtService.validateToken(refreshToken)){
+
+        if(!jwtService.validateToken(refreshToken, jwtConfig.getRefreshTokenSecretKey())){
             throw new InvalidTokenException("Invalid token");
         }
-        String usernameOrEmail = jwtService.getUsernameOrEmailFromToken(refreshToken);
+        String usernameOrEmail = jwtService.getUsernameOrEmailFromToken(refreshToken, jwtConfig.getRefreshTokenSecretKey());
         User user = userService.getUser(usernameOrEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
         String password = user.getPassword();
         Role role = user.getRole();

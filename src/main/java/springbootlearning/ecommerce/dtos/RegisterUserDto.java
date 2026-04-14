@@ -2,6 +2,7 @@ package springbootlearning.ecommerce.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,8 @@ public class RegisterUserDto {
     private String email;
 
     @NotBlank(message = "Username must not be blanked")
+    @Pattern(regexp = "^[a-z0-9_]+$", message = "Username must only contain lower case characters, numbers, and/or underscore (_)")
+    @Size(min = 4, max = 18, message = "Username must be 4 to 18 characters long")
     private String username;
 
     @NotBlank(message = "Password must not be blanked")
