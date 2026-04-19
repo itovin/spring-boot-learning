@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -28,5 +29,10 @@ public class RefreshToken {
     @Column(name = "expires_at")
     private Instant expiresAt;
 
+    public RefreshToken(User user, Instant expiresAt){
+        this.user = user;
+        this.expiresAt = expiresAt;
+        this.isRevoked = false;
+    }
 
 }

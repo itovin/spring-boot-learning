@@ -1,5 +1,6 @@
 package springbootlearning.ecommerce.filters;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,9 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import springbootlearning.ecommerce.config.JwtConfig;
 import springbootlearning.ecommerce.entities.Role;
-import springbootlearning.ecommerce.services.JwtService;
+import springbootlearning.ecommerce.securities.JwtService;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -33,12 +35,16 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
             return;
         }
         String token = authHeader.replace("Bearer ", "");
-        if(!jwtService.validateToken(token, jwtConfig.getAccessTokenSecretKey())){
+        Claims claims;
+        try{
+            claims = jwtService.validateTokenAndGetClaim(token, jwtConfig.getAccessTokenSecretKey());
+        }catch (Exception e){
             filterChain.doFilter(request, response);
             return;
         }
-        Role role = jwtService.getRoleFromToken(token, jwtConfig.getAccessTokenSecretKey());
-        String principal = jwtService.getUsernameOrEmailFromToken(token, jwtConfig.getAccessTokenSecretKey());
+
+        Role role = Role.valueOf(claims.get("role", String.class));
+        String principal = claims.getSubject();
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 principal,
                 null,

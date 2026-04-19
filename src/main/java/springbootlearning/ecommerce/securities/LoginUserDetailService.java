@@ -1,4 +1,4 @@
-package springbootlearning.ecommerce.services;
+package springbootlearning.ecommerce.securities;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import springbootlearning.ecommerce.entities.Role;
 import springbootlearning.ecommerce.entities.User;
+import springbootlearning.ecommerce.services.UserService;
 
-import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,12 +20,16 @@ public class LoginUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
        User user = userService.getUser(usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("Login failed. Invalid credentials"));
+       Long id = user.getId();
        String password = user.getPassword();
        Role role = user.getRole();
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+                id,
                 usernameOrEmail,
                 password,
                 List.of(new SimpleGrantedAuthority(role.name()))
         );
     }
+
+
 }
