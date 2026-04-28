@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers("/cart").authenticated()
                 .requestMatchers("/me").authenticated()
                 .requestMatchers(HttpMethod.POST, "/products").hasRole(Role.ADMIN.name())
+                .requestMatchers("/orders").authenticated()
                 .anyRequest().permitAll())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(c ->

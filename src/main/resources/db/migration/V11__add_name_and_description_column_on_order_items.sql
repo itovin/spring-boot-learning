@@ -1,0 +1,3 @@
+ALTER TABLE order_items
+ADD COLUMN name VARCHAR(255) NOT NULL,
+ADD COLUMN description VARCHAR(255);
